@@ -1,0 +1,736 @@
+---
+title: "AMS 572 Group 2 project"
+author: "Matt, Priyansh, Junhao, Saurabh, Amy"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,fig.width=6, fig.height=4)
+```
+
+# Introduction    
+
+Mental Health is an important aspect of our lives that all of us should take care of. It influences how we think, feel and act as we cope with life. It also helps determine how we handle stress, relate to others, and take decisions. Therefore, mental health is significant at every stage of life, from childhood and adolescence through adulthood and aging. Mental Health is closely connected to Physical Health. It plays a major role in people’s ability to maintain good physical health. Metal illnesses affects people’s ability to participate in health-promoting behaviors. We have collected a dataset for two different types of Therapy, Cognitive Behavioral Therapy and Psychodynamic Psychotherapy. Cognitive Behavioral Therapy is a psychotherapy in which negative patterns of thought about self and world are challenged in order to alter unwanted behavior patterns or treat mood disorders such as depression. CBT ultimately aims to teach patients to be their own therapist, by helping them to understand their current ways of thinking and behaving, and by equipping them with the tools to change their maladaptive cognitive and behavioral patterns. Psychodynamic psychotherapy involves the interpretation of mental and emotional processes rather than focusing on behavior. Psychodynamic therapists attempt to help patients find patterns in their emotions, thoughts and beliefs in order to gain insight into their current self.
+
+Our dataset [(https://teachpsychscience.org/index.php/design-data-which-therapy-is-best-for-treating-eating-disorders-mixed-design-and-mixed-anova/432/research-methods/)](https://teachpsychscience.org/index.php/design-data-which-therapy-is-best-for-treating-eating-disorders-mixed-design-and-mixed-anova/432/research-methods/) includes 63 participants who went through either one of the therapies. 32 participants who went through the Cognitive Behavioral Therapy and 31 participants for Psychodynamic Psychotherapy. From our dataset we wanted to know how do the treatment types and different emotional triggers such a Relationship, Work or Future impacts disordered eating symptoms. After the participants had been treated by respective therapies, they were exposed to the three different emotional triggers (Relationship, Work, Future) while having a bowl of grapes placed in front of them. For getting inference on the effectiveness of the therapies, the data on number of grapes consumed by each was gathered, also the distance at which the participants moved the bowl of grapes away from them. The data was collected for participants of 5 different Ethnicities, which are Asian or Eastern Ancestry, Black or African Ancestry, Hispanic or Spanish Ancestry, European Ancestry or Other. Considering the gender of the participants, our data only includes three male participants as to 60 female participants.
+
+The age of the participants ranges from 18 years to 40 years with the majority of participants falling in the range of 18 to 30 years of age. The final column of the data represents the mean of overall grapes consumed by a single participant under each emotional trigger.
+
+# Aim
+
+In this dataset we plan to perform the following hypothesis:  
+1. Hypothesis 1: Eating habits of both the therapies are same  
+2. Hypothesis 2: Mixed Design Analysis of Variance  
+    i. Effect of therapy had same eating patterns on all three stress situations     
+    ii.There is an interaction between therapy and distance of the bowl on all three stress situations
+
+Along with these hypotheses, we also generate missing values in the data at random (MCAR) and non-random manner (MNAR), and discuss the effect of two types of missing values on the
+data analysis. 
+ 
+# Methodology 
+
+The dataset contains 63 rows of participants data and 12 feature columns - participant identification (*Participant*), type of therapy (*Therapy*), number of grapes eaten after being exposed to relationship stress (*Rel_grapes*), number of grapes eaten after being exposed to relationship stress (*Work_grapes*), number of grapes eaten after being exposed to relationship stress (*Future_grapes*), distance of the bowl after being exposed to relationship stress (*Rel_distance*), distance of the bowl after being exposed to relationship stress (*Work_distance*), distance of the bowl after being exposed to relationship stress (*Future_distance*), Gender, Age, Ethnicity, mean of the grapes eaten after being exposed to all three stresses (*x_OverallGrapes*). 
+
+## Loading the data and required libraries
+
+The data was in .sav format and the *foreign* package was utilized to load the data. We also utilized *mice* and *missMethods* packages for missing values imputation and generation, *tidyverse*,*dplyr*,*rstatix* for easy handling and tidying of data, *ggpubr* for plotting, and *WRS2*  for model analysis.
+
+```{r, warning=FALSE,message=FALSE}
+library(foreign) #loading .sav data file
+library(dplyr) #summarizing data
+library(ggpubr) #ggplot
+library(mice) #missing values imputation
+library(missMethods) #generate MNAR missing values
+library(rstatix); library(tidyverse) #tidying data
+library(WRS2) #robust ANOVA
+data <- read.spss('D:/SBU/Fall 2021/AMS 572/project/data.sav', to.data.frame = TRUE)
+```
+
+## Hypothesis 1 : Eating habits of both the therapies are same 
+
+The participants completing Cognitive-Behavioral therapy will eat the same amount of grapes as those completing Psychodynamic therapy. This can be tested using the two-sample t-test on the overall grapes eaten on both the therapies. But to use this test, we need to check whether the samples are normally distributed and check whether the variance of both the samples are equal or not. These tests and first hypothesis will be performed on the dataset and then on two kinds of missing dataset.
+
+## Case 1: Using complete data
+
+### Summary Statistics of the Data
+
+```{r}
+group_by(data, Therapy) %>%
+  summarise(
+    count = n(),
+    mean = mean(x_OverallGrapes, na.rm = TRUE),
+    sd = sd(x_OverallGrapes, na.rm = TRUE)
+  )
+```
+
+### Visualize the Data
+
+```{r}
+ggboxplot(data, x = "Therapy", y = "x_OverallGrapes", 
+          color = "Therapy", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Grapes Eaten", xlab = "Therapies")
+```
+
+### Normality Assumption
+
+**Null Hypothesis:** The data are normally distributed.  
+**Alternative Hypothesis:** The data are not normally distributed.  
+**Significance Level:** 0.05
+
+```{r}
+with(data,shapiro.test(x_OverallGrapes[Therapy == 'Cognitive-Behavioral']))
+with(data,shapiro.test(x_OverallGrapes[Therapy == 'Psychodynamic']))
+```
+
+With respect to Cognitive-Behavioral therapy (1), since the p-value = 0.6546 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that the data are normally distributed according to the Shapiro-Wilk normality test.
+
+With respect to Psychodynamic therapy (2), since the p-value = 0.0005903 < 0.05 = alpha, we reject the null hypothesis and conclude that the data are not normally distributed according to the Shapiro-Wilk normality test.
+
+However, since the sample sizes of Cognitive-Behavioral therapy and Psychodynamic therapy are 32 and 31 respectively, both of these values exceed 30 (n > 30), therefore the Central Limit Theorem can be applied to these samples. Due to this, it can be assumed that both therapy samples from the data approach the normal distribution and are therefore normally distributed.  
+
+### Homogeneity in Variance Assumption
+
+Now that we have verified that both of the therapy samples are normally distributed, we must check for homogeneity in their variances using the F-test.
+
+**Null Hypothesis:** The two therapy populations have same variances.  
+**Alternative Hypothesis:** The two therapy populations have different variances.  
+**Significance Level:** 0.05
+
+```{r}
+res.ftest <- var.test(x_OverallGrapes ~ Therapy, data = data)
+res.ftest
+```
+
+Since the p-value = 0.4718 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that there is no significant difference between the variances of the two therapy populations. 
+
+### Unpaired Two-Samples t-test
+
+**Null Hypothesis:** Those completing Cognitive-Behavioral therapy will eat the same amount of grapes as those completing Psychodynamic therapy (equal means).  
+**Alternative Hypothesis:** Those completing Cognitive-Behavioral therapy will not eat the same amount of grapes as those completing Psychodynamic therapy (unequal means).  
+**Significance Level:** 0.05
+
+```{r}
+test <- t.test(x_OverallGrapes ~ Therapy, data = data, var.equal = TRUE)
+test
+```
+
+Since the p-value = 0.0009354 < 0.05 = alpha, we reject the null hypothesis and conclude that the means of grapes eaten by the two therapy populations are different.
+
+## Case 2: Using MCAR data
+
+### Missing values generated Completely at Random (MCAR)
+
+Since we had a dataset with no missing values we generate missing values completely at random and use the Predictive mean matching (pmm) method to impute the misssing values from the *MICE* package.
+
+```{r}
+set.seed(123)
+d1<-data
+a1<-sample(3:12, 60, replace = TRUE)
+a2<-sample(1:63, 60, replace = TRUE)
+for (i in 1:length(a2)){
+for (j in 1:length(a1)){
+if (i==j){d1[a2[i],a1[j]]<-NA}
+}
+}
+d1 <- sapply(d1, unclass)
+```
+
+```{r chunk-name, results="hide", warning=FALSE} 
+### Impute Missing Values
+new_data <- mice(d1, m=5, maxit=50, meth='pmm', seed=500)
+mcar_data <- complete(new_data, 1)
+```
+
+### Summary Statistics of the Data
+
+```{r}
+group_by(mcar_data, Therapy) %>%
+  summarise(
+    count = n(),
+    mean = mean(x_OverallGrapes, na.rm = TRUE),
+    sd = sd(x_OverallGrapes, na.rm = TRUE)
+  )
+```
+
+### Visualize the Data
+
+```{r}
+ggboxplot(mcar_data, x = "Therapy", y = "x_OverallGrapes", 
+          color = "Therapy", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Grapes Eaten", xlab = "Therapies")
+```
+
+### Normality Assumption
+
+**Null Hypothesis:** The data are normally distributed.  
+**Alternative Hypothesis:** The data are not normally distributed.  
+**Significance Level:** 0.05
+
+```{r}
+with(mcar_data,shapiro.test(x_OverallGrapes[Therapy == 1]))
+with(mcar_data,shapiro.test(x_OverallGrapes[Therapy == 2]))
+```
+
+With respect to Cognitive-Behavioral therapy (1), since the p-value = 0.6205 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that the data are normally distributed according to the Shapiro-Wilk normality test.
+
+With respect to Psychodynamic therapy (2), since the p-value = 0.0005758 < 0.05 = alpha, we reject the null hypothesis and conclude that the data are not normally distributed according to the Shapiro-Wilk normality test.
+
+However, since the sample sizes of Cognitive-Behavioral therapy and Psychodynamic therapy are 32 and 31 respectively, both of these values exceed 30 (n > 30), therefore the Central Limit Theorem can be applied to these samples. Due to this, it can be assumed that both therapy samples from the data approach the normal distribution and are therefore normally distributed.
+
+### Homogeneity in Variance Assumption
+
+Now that we have verified that both of the therapy samples are normally distributed, we must check for homogeneity in their variances using the F-test.
+
+**Null Hypothesis:** The two therapy populations have same variances.  
+**Alternative Hypothesis:** The two therapy populations have different variances.  
+**Significance Level:** 0.05
+
+```{r}
+res.ftest2 <- var.test(x_OverallGrapes ~ Therapy, data = mcar_data)
+res.ftest2
+```
+
+Since the p-value = 0.4404 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that there is no significant difference between the variances of the two therapy populations.
+
+### Unpaired Two-Samples t-test
+
+**Null Hypothesis:** Those completing Cognitive-Behavioral therapy will eat the same amount of grapes as those completing Psychodynamic therapy (equal means).  
+**Alternative Hypothesis:** Those completing Cognitive-Behavioral therapy will not eat the same amount of grapes as those completing Psychodynamic therapy (unequal means).  
+**Significance Level:** 0.05
+
+```{r}
+test2 <- t.test(x_OverallGrapes ~ Therapy, data = mcar_data, var.equal = TRUE)
+test2
+```
+
+Since the p-value = 0.001001 < 0.05 = alpha, we reject the null hypothesis and conclude that the means of grapes eaten by the two therapy populations are different.
+
+## Case 3: Using MNAR data
+
+### Missing values generated not at Random (MNAR)
+
+Here we generate missing values not at random, that is these missing values will be non-ignorable ones. We use *delete_MNAR_censoring* from *missMethods* to generate these missing values and use the Predictive mean matching (pmm) method to impute the missing values from the *MICE* package.
+
+```{r}
+d2 <- delete_MNAR_censoring(data, 0.1, "x_OverallGrapes")
+```
+
+```{r chunk-name2, results="hide", warning=FALSE}
+### Impute Missing Values
+new_data2 <- mice(d2, m=5, maxit=50, meth='pmm', seed=500)
+mnar_data <- complete(new_data2, 1)
+```
+
+### Summary Statistics of the Data
+
+```{r}
+  group_by(mnar_data, Therapy) %>%
+  summarise(
+    count = n(),
+    mean = mean(x_OverallGrapes, na.rm = TRUE),
+    sd = sd(x_OverallGrapes, na.rm = TRUE)
+  )
+```
+
+### Visualize the Data
+
+```{r}
+ggboxplot(mnar_data, x = "Therapy", y = "x_OverallGrapes", 
+          color = "Therapy", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Grapes Eaten", xlab = "Therapies")
+```
+
+### Normality Assumption
+
+**Null Hypothesis:** The data are normally distributed.  
+**Alternative Hypothesis:** The data are not normally distributed.  
+**Significance Level:** 0.05
+
+```{r}
+with(mnar_data,shapiro.test(x_OverallGrapes[Therapy == "Cognitive-Behavioral"]))
+with(mnar_data,shapiro.test(x_OverallGrapes[Therapy == "Psychodynamic"]))
+```
+
+With respect to Cognitive-Behavioral therapy (1), since the p-value = 0.2339 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that the data are normally distributed according to the Shapiro-Wilk normality test.
+
+With respect to Psychodynamic therapy (2), since the p-value = 2.447e-05 < 0.05 = alpha, we reject the null hypothesis and conclude that the data are not normally distributed according to the Shapiro-Wilk normality test.
+
+However, since the sample sizes of Cognitive-Behavioral therapy and Psychodynamic therapy are 32 and 31 respectively, both of these values exceed 30 (n > 30), therefore the Central Limit Theorem can be applied to these samples. Due to this, it can be assumed that both therapy samples from the data approach the normal distribution and are therefore normally distributed.
+
+### Homogeneity in Variance Assumption
+
+Now that we have verified that both of the therapy samples are normally distributed, we must check for homogeneity in their variances using the F-test.
+
+**Null Hypothesis:** The two therapy populations have same variances.  
+**Alternative Hypothesis:** The two therapy populations have different variances.  
+**Significance Level:** 0.05
+
+```{r}
+res.ftest3 <- var.test(x_OverallGrapes ~ Therapy, data = mnar_data)
+res.ftest3
+```
+
+Since the p-value = 0.4888 > 0.05 = alpha, we fail to reject the null hypothesis and conclude that there is no significant difference between the variances of the two therapy populations.
+
+### Unpaired Two-Samples t-test
+
+**Null Hypothesis:** Those completing Cognitive-Behavioral therapy will eat the same amount of grapes as those completing Psychodynamic therapy (equal means).  
+**Alternative Hypothesis:** Those completing Cognitive-Behavioral therapy will not eat the same amount of grapes as those completing Psychodynamic therapy (unequal means).  
+**Significance Level:** 0.05
+
+```{r}
+test3 <- t.test(x_OverallGrapes ~ Therapy, data = mnar_data, var.equal = TRUE)
+test3
+```
+
+Since the p-value = 0.0005461 < 0.05 = alpha, we reject the null hypothesis and conclude that the means of grapes eaten by the two therapy populations are different.
+
+# Visualizing the data 
+
+In the following plot we notice that there is no pattern for age and ethnicity is the number of grapes eaten or the ditance of the bowl.
+
+```{r}
+d_Ethnicity <- mutate(data, overall_distance = (Rel_distance+Work_distance+Future_distance)/3)
+d_Ethnicity <- d_Ethnicity %>%  
+  gather(key = "stress_type", value = "stress_grapes", overall_distance, x_OverallGrapes) %>%
+  convert_as_factor(Participant, Gender,Age, stress_type)
+  
+Ethnicityboxplot2 <- ggboxplot(d_Ethnicity, x = "Therapy", y = "stress_grapes",color = "Ethnicity",          palette = "jco",facet.by =  "stress_type")
+Ethnicityboxplot2
+```
+
+```{r,message=FALSE}
+d_age<- mutate(data, age = if_else(Age <= 20, '<=20', if_else(Age >20 & Age <=30, '20-30', '30-40')))
+d_age <- mutate(d_age, overall_distance = (Rel_distance+Work_distance+Future_distance)/3)
+d_age <- d_age %>%  gather(key = "stress_type", value = "stress_grapes", overall_distance, x_OverallGrapes) %>%
+  convert_as_factor(Participant, Gender,age, stress_type)
+  
+Ageboxplot2 <- ggboxplot(d_age, x = "Therapy", y = "stress_grapes",color = "age",          palette = "jco",facet.by =  "stress_type")
+Ageboxplot2
+
+```
+
+We plan to do a mixed design model where we check if there is a relation between the kind of stress and therapy undergone based on the number of grapes eaten and the distance of the bowl.  We now check if there is any relationship or dependence between number of grapes eaten and the distance of the bowl.
+
+```{r,message=FALSE}
+d3 <- mutate(data, overall_distance = (Rel_distance+Work_distance+Future_distance)/3)
+gg1 <- ggplot(data = d3) + 
+  geom_smooth(mapping = aes(x = overall_distance, y = x_OverallGrapes))+ 
+  geom_smooth(mapping = aes(x = overall_distance, y = x_OverallGrapes, color = Therapy))+ theme(legend.position = c(0.8, 1))
+gg2 <- ggplot(data = d3) + 
+  geom_smooth(mapping = aes(x = Rel_distance, y = Rel_grapes, color = Therapy), show.legend = FALSE)
+gg3 <- ggplot(data = d3) + 
+  geom_smooth(mapping = aes(x = Work_distance, y = Work_grapes, color = Therapy), show.legend = FALSE)
+gg4 <- ggplot(data = d3) + 
+  geom_smooth(mapping = aes(x = Future_distance, y = Future_grapes, color = Therapy), show.legend = FALSE)
+ggarrange(gg1,gg2,gg3,gg4, 
+          labels = c("Overall","Relationship", "Work","Future"),
+          ncol = 2, nrow = 2)
+```
+
+From the plots, we notice that there is no noticeable relationship between number of grapes eaten and the distance of the bowl for participants exposed to each stresses and the overall stress. Therefore, in our study we will analyze effects of number of grapes eaten and distance of the bowl separately.
+
+# Hypothesis 2 : Mixed Design Analysis of Variance Model 
+
+A mixed-design analysis of variance model, also known as a split-plot ANOVA, is used to test for differences between two or more independent groups whilst subjecting participants to repeated measures. Thus, in a mixed-design ANOVA model, one factor (a fixed effects factor) is a between-subjects variable, which have independent categories and the other (a random effects factor) is a within-subjects variable which have related categories also known as repeated measures. Thus, overall, the model is a type of mixed-effects model. 
+
+We use two-way anova to analyze th effect of therapy on all the different stress situations. This model has the following assumptions:  
+1. **No significant outliers** in any cell of the design  
+2. **Normality:** the outcome (or dependent) variable should be approximately normally distributed in each cell of the design  
+3. **Homogneity of variance assumption**  
+4. **Assumption of sphericity:** the variance of the differences between within-subjects groups should be equal
+
+## Case 1: Using complete data
+
+## Grapes eaten due to stress
+
+Here we have the two therapies as between groups effects and the three stresses as within group effects. Using this method we check whether there was any noticeable difference in the number of grapes eaten to the two therapies participants after being exposed to each of the stresses. The following graph shows that the participants receiving Psychodynamic treatment have a smaller median and inter-quartile range compared to its counterpart and two of them(future and work) have several outliers which can be verified using identify_outliers() command.
+
+## Assumptions
+
+### Checking for outliers
+
+```{r}
+d_Stress_type <- data %>% 
+  gather(key = "stress_type", value = "stress_grapes", Rel_grapes, Work_grapes, Future_grapes, ) %>%
+  convert_as_factor(Participant, stress_type)
+
+stresstypeboxplot <- ggboxplot( d_Stress_type, x = "stress_type" , y = "stress_grapes", 
+                    color = "Therapy", palette ="jco", ylab = "Grapes Eaten", xlab = "Stress type" ) 
+stresstypeboxplot
+d_Stress_type[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_grapes)
+```
+
+We notice that there are a few ouliers using the identify_outliers()but we still move forward with the analysis with the outliers.
+
+### Normality
+
+We see that all three stresses receiving Cognitive-Behavioral treatment and the relationship stress for Psychodynamic treatment fall approximately along the reference line, but work and future stress are not normal for  Psychodynamic treatment. Therefore, we log transform the data. But the shapiro_test() inspired from the Shapiro-Wilk test on the log transformed data shows that p-values are less than 0.05. Therefore, the normality assumption is still not satisfied. Therefore, we do robust ANOVA on the original data from the WRS2 package.
+
+```{r}
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_type, "stress_grapes", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+d_Stress_typeN<-d_Stress_type
+d_Stress_typeN$stress_grapes<-log(d_Stress_typeN$stress_grapes+1)
+
+#Normality
+d_Stress_typeN[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_grapes)
+```
+
+### Homogeneity of variance
+
+The homogeneity of variances is verified by Levene’s test (p > 0.05).
+
+```{r}
+#Homogeneity of variance
+d_Stress_type %>%
+  group_by(stress_type) %>%
+  levene_test(stress_grapes~Therapy)
+```
+
+### Homogeneity of covariance
+
+There was homogeneity of covariances, as assessed by Box’s test of equality of covariance matrices (p > 0.001).
+
+```{r}
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_type[, "stress_grapes", drop = FALSE], d_Stress_type$Therapy)
+```
+
+### Assumption of sphericity
+
+The assumption of sphericity will be automatically checked during the computation of the ANOVA test using the R function anova_test(). The Mauchly’s test is internally used to assess the sphericity assumption. By using the function get_anova_table() to extract the ANOVA table, the Greenhouse-Geisser sphericity correction is automatically applied to factors violating the sphericity assumption
+
+## Two-way mixed ANOVA test 
+
+A significant two-way interaction indicates that the impact that one factor has on the outcome variable depends on the level of the other factor (and vice versa). We check the interactions using the t2way, robust ANOVA function from the WRS2 package. Post hoc tests can be applied using the mcp2atm function
+
+### Robust ANOVA
+
+```{r}
+two.way<-t2way(formula = stress_grapes ~ stress_type*Therapy, data=d_Stress_type)
+two.way
+```
+
+The number of grapes eaten between therapies and stress type are pretty much same. We provide this conclusion because the p-value we received from ANOVA is greater than 0.05. If we have a significant result we would use mcp2atm to check the comparisons as to which groups wold have different grapes eaten.
+
+```{r}
+postgoggle <- mcp2atm(formula = stress_grapes ~ Therapy*stress_type, data=d_Stress_type)
+postgoggle
+```
+
+Let us focus on the interaction first by starting at the bottom. The last effect tells us that the difference number of grapes eaten for relationship stress vs. work stress does not differ significantly in Cognitive-Behavioral and Psychodynamic Therapy. Similarly, the second to last effect tells us that there is no significant difference in number of grapes eaten  for relationship vs future stress, and future vs work stress considering both therapies. However, both the therapies do differ differently in the overall manner.
+
+## Distance of the bowl after exposed to stress
+
+By using the same method for stress and therapy interaction using number of grapes eaten, we check whether there was any noticeable difference in the distance of the bowl moved to the two therapies participants after being exposed to each of the stresses. 
+
+```{r}
+d_Stress_distance <- data %>%
+  gather(key = "stress_type", value = "stress_distance", Rel_distance, 
+         Work_distance, Future_distance) %>%
+  convert_as_factor(Participant, stress_type)
+  
+## Visualization for stress_type
+stressdistanceboxplot <- ggboxplot( d_Stress_distance, x = "stress_type" , y = "stress_distance", 
+                    color = "Therapy", palette ="jco", ylab = "Bowl distance", xlab = "Stress type" ) 
+stressdistanceboxplot
+```
+
+The graphs shows that there is no noticeable difference in the distance of the bowl moved after being exposed to all three kinds of stresses in both the treatments. 
+
+## Assumptions
+
+All the assumptions are satisfied. 
+
+```{r, echo=FALSE,results='hide', fig.show='hide'}
+# Checking for outliers
+d_Stress_distance[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_distance)
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_distance, "stress_distance", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+#normality
+d_Stress_distance[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_distance)
+#Homogeneity of variance
+d_Stress_distance %>% convert_as_factor(Therapy) %>%
+  group_by(stress_type) %>%
+  levene_test(stress_distance~Therapy)
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_distance[, "stress_distance", drop = FALSE], d_Stress_distance$Therapy)
+```
+
+
+## Two-way mixed ANOVA test 
+
+Since the assumption are satisfied, we use the normal ANOVA model for the analysis
+
+```{r}
+res.aov2 <- aov(stress_distance ~ Therapy+stress_type+Therapy*stress_type , data=d_Stress_distance)
+summary(res.aov2)
+```
+
+From the ANOVA table we can conclude that both therapy and stress type are not statistically significant. These results would lead us to believe that changing therapies or tress type, will not impact significantly the mean distance of the bowl. If the result was statistically different, we would have done the bonferroni correction test to decide which groups have statistical significance.
+
+## Case 2: Using MCAR data
+
+We now use the data set where the missing values were generated completely at random and imputed missing values using the MICE package. We proceed with the same analysis as was done with the complete dataset.
+
+## Grapes eaten due to stress
+
+From the plot we notice that number of grapes eaten after being exposed to future and work stress is approximately same.
+
+```{r}
+#mcar_data is imputed values dataset
+d_Stress_type_mcar <- mcar_data %>% 
+  gather(key = "stress_type", value = "stress_grapes", Rel_grapes, Work_grapes, Future_grapes, ) %>%
+  convert_as_factor(Participant, stress_type, Therapy)
+
+stresstypeboxplot <- ggboxplot( d_Stress_type_mcar, x = "stress_type" , y = "stress_grapes", 
+                    color = "Therapy", palette ="jco", ylab = "Grapes Eaten", xlab = "Stress type" ) 
+stresstypeboxplot
+```
+
+## Assumptions
+
+All the assumptions are satisfied except that there are a few outliers and normality. The p-value under shapiro test for the log transformed data is still less than 0.05.Therefore, similar to the complete case, we moved ahead with Robust ANOVA.
+
+```{r, echo=FALSE,results='hide', fig.show='hide'}
+# Checking for outliers
+d_Stress_type_mcar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_grapes)
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_type_mcar, "stress_grapes", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+d_Stress_type_mcarN<-d_Stress_type_mcar
+d_Stress_type_mcarN$stress_grapes<-log(d_Stress_type_mcarN$stress_grapes+1)
+
+#normality
+d_Stress_type_mcarN[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_grapes)
+#Homogeneity of variance
+d_Stress_type_mcar %>% convert_as_factor(Therapy) %>%
+  group_by(stress_type) %>%
+  levene_test(stress_grapes~Therapy)
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_type_mcar[, "stress_grapes", drop = FALSE], d_Stress_type_mcar$Therapy)
+```
+
+## Two-way mixed ANOVA test 
+
+### Robust ANOVA
+
+```{r}
+two.way<-t2way(formula = stress_grapes ~ stress_type*Therapy, data=d_Stress_type_mcar)
+two.way
+```
+
+The number of grapes eaten between therapies and stress type are pretty much same. We provide this conclusion because the p-value we received from ANOVA is greater than 0.05. This is the same conclusion as complete/original data.
+
+## Distance of the bowl after exposed to stress
+
+By using the same method as before we check whether there was any noticeable difference in the distance of the bowl moved to the two therapies participants after being exposed to each of the stresses. 
+
+```{r}
+## Stress_distance
+d_Stress_distance_mcar <- mcar_data %>%
+  gather(key = "stress_type", value = "stress_distance", Rel_distance, 
+         Work_distance, Future_distance) %>%
+  convert_as_factor(Participant, stress_type, Therapy)
+  
+## Visualization for stress_type
+stressdistanceboxplot <- ggboxplot( d_Stress_distance_mcar, x = "stress_type" , y = "stress_distance", 
+                    color = "Therapy", palette ="jco", ylab = "Bowl distance", xlab = "Stress type" ) 
+stressdistanceboxplot  
+```
+
+The graphs shows that there is no noticeable difference in the distance of the bowl moved after being exposed to all three kinds of stresses in both the treatments. 
+
+## Assumptions
+
+All the assumptions are satisfied. 
+
+```{r, echo=FALSE,results='hide', fig.show='hide'}
+# Checking for outliers
+d_Stress_distance_mcar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_distance)
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_distance_mcar, "stress_distance", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+#normality
+d_Stress_distance_mcar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_distance)
+#Homogeneity of variance
+d_Stress_distance_mcar %>% convert_as_factor(Therapy) %>%
+  group_by(stress_type) %>%
+  levene_test(stress_distance~Therapy)
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_distance_mcar[, "stress_distance", drop = FALSE], d_Stress_distance_mcar$Therapy)
+```
+
+
+## Two-way mixed ANOVA test 
+
+Since the assumption are satisfied, we use the normal ANOVA model for the analysis
+
+```{r}
+res.aov2 <- aov(stress_distance ~ Therapy*stress_type , data=d_Stress_distance_mcar)
+summary(res.aov2)
+```
+
+From the ANOVA table we can conclude that both therapy and stress type are not statistically significant. These results would lead us to believe that changing therapies or tress type, will not impact significantly the mean distance of the bowl. This is the same conclusion as complete/original data.
+
+
+## Case 3: Using MNAR data
+
+We now use the data set where the missing values were generated not completely at random and imputed missing values using the MICE package. We proceed with the same analysis as was done with the complete dataset.
+
+## Grapes eaten due to stress
+
+From the plot we notice that number of grapes eaten after being exposed to future and work stress is approximately same.
+
+```{r}
+#mnar_data is imputed values dataset
+d_Stress_type_mnar <- mnar_data %>% 
+  gather(key = "stress_type", value = "stress_grapes", Rel_grapes, Work_grapes, Future_grapes, ) %>%
+  convert_as_factor(Participant, stress_type, Therapy)
+
+stresstypeboxplot <- ggboxplot( d_Stress_type_mnar, x = "stress_type" , y = "stress_grapes", 
+                    color = "Therapy", palette ="jco", ylab = "Grapes Eaten", xlab = "Stress type" ) 
+stresstypeboxplot
+```
+
+## Assumptions
+
+All the assumptions are satisfied except that there are a few outliers and the p-value under shapiro test of number of grapes eaten after being exposed to future and work stress after Psychodynamic therapy is less than 0.05. This was the same situation that occurred in the complete data. But we move ahead with the analysis.
+
+```{r, echo=FALSE,results='hide', fig.show='hide'}
+# Checking for outliers
+d_Stress_type_mnar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_grapes)
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_type_mnar, "stress_grapes", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+d_Stress_type_mnarN<- d_Stress_type_mnar 
+d_Stress_type_mnarN$stress_grapes<-log(d_Stress_type_mnarN$stress_grapes+1)
+
+#normality
+d_Stress_type_mnarN[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_grapes)
+#Homogeneity of variance
+d_Stress_type_mnar %>% convert_as_factor(Therapy) %>%
+  group_by(stress_type) %>%
+  levene_test(stress_grapes~Therapy)
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_type_mnar[, "stress_grapes", drop = FALSE], d_Stress_type_mnar$Therapy)
+```
+
+## Two-way mixed ANOVA test 
+
+### Robust ANOVA
+
+```{r}
+two.way<-t2way(formula = stress_grapes ~ stress_type*Therapy, data=d_Stress_type_mnar)
+two.way
+```
+
+The number of grapes eaten between therapies and stress type are pretty much same. We provide this conclusion because the p-value we received from ANOVA is greater than 0.05. This is the same result as original?complete and MCAR dataset.
+
+## Distance of the bowl after exposed to stress
+
+By using the same method as before we check whether there was any noticeable difference in the distance of the bowl moved to the two therapies participants after being exposed to each of the stresses. 
+
+```{r}
+## Stress_distance
+d_Stress_distance_mnar <- mnar_data %>%
+  gather(key = "stress_type", value = "stress_distance", Rel_distance, 
+         Work_distance, Future_distance) %>%
+  convert_as_factor(Participant, stress_type, Therapy)
+  
+## Visualization for stress_type
+stressdistanceboxplot <- ggboxplot( d_Stress_distance_mnar, x = "stress_type" , y = "stress_distance", 
+                    color = "Therapy", palette ="jco", ylab = "Bowl distance", xlab = "Stress type" ) 
+stressdistanceboxplot  
+```
+
+The graphs shows that there is no noticeable difference in the distance of the bowl moved after being exposed to all three kinds of stresses in both the treatments. 
+
+## Assumptions
+
+All the assumptions are satisfied. 
+
+```{r, echo=FALSE,results='hide', fig.show='hide'}
+# Checking for outliers
+d_Stress_distance_mnar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  identify_outliers(stress_distance)
+## visualization for normality of stress_type
+stresstypeqqpolt <- ggqqplot(d_Stress_distance_mnar, "stress_distance", ggtheme = theme_bw()) +
+   facet_grid(stress_type ~ Therapy) 
+stresstypeqqpolt
+#normality
+d_Stress_distance_mnar[,-c(3,4,5,6,7,8,9)] %>%
+  group_by(stress_type, Therapy) %>%
+  shapiro_test(stress_distance)
+#Homogeneity of variance
+d_Stress_distance_mnar %>% convert_as_factor(Therapy) %>%
+  group_by(stress_type) %>%
+  levene_test(stress_distance~Therapy)
+#Homogeneity of covariance
+# Compute Box’s M-test:
+box_m(d_Stress_distance_mnar[, "stress_distance", drop = FALSE], d_Stress_distance_mnar$Therapy)
+```
+
+## Two-way mixed ANOVA test 
+
+Since the assumption are satisfied, we use the normal ANOVA model for the analysis
+
+```{r}
+res.aov2 <- aov(stress_distance ~ Therapy*stress_type , data=d_Stress_distance_mnar)
+summary(res.aov2)
+```
+
+From the ANOVA table we can conclude that both therapy and stress type are not statistically significant. These results would lead us to believe that changing therapies or tress type, will not impact significantly the mean distance of the bowl. This is the same conclusion as complete/original data and MCAR data.
+
+# Conclusion
+
+We conclude that eating habits of Psychodynamic and Cognitive Behavioral are different. Means of overall grapes eaten by two therapy populations are different. Similar results were concluded from MCAR data and MNAR data.
+
+From two-way mixed ANOVA we concluded that for both Cognitive Behavioral therapy and Psychodynamic therapy there was no statistical significant interaction between therapy and number of grapes eaten in each of stress types. We conclude that the mean of the number of grapes eaten when exposed to relationship stress, work, stress and future stress are all same for both the therapies. Also there was no difference in the distance of the bowl moved for both the therapy participants after being exposed to each of the stresses. Similar results are concluded fo both MCAR data and MNAR data.
+
+There was also no relation seen between number of grapes and bowl distance in each of the stress types and therapies.
+
+
+# References
+
+1. https://en.wikipedia.org/wiki/Mixed-design_analysis_of_variance
+
+2. https://teachpsychscience.org/index.php/design-data-which-therapy-is-best-for-treating-eating-disorders-mixed-design-and-mixed-anova/432/research-methods/
+
+3. https://www.datanovia.com/en/lessons/mixed-anova-in-r/
+
+4. https://cran.r-project.org/web/packages/WRS2/vignettes/WRS2.pdf
