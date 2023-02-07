@@ -9,3 +9,6 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
 ## Table of Contents
 
 - [About Me](https://github.com/mattabruzzeseott/data_analysis_portfolio#about-me)
+- [Stony Brook University Projects](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/sbu_projects)
+  - [Genetic Linear Regression Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_315/AMS%20315%20Project%201%20(Parts%20A%20%26%20B).pdf)
+  - [Genetic Multiple Linear Regression Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_315/AMS%20315%20Project%202.pdf)
