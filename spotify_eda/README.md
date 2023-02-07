@@ -20,3 +20,6 @@ The datasets for this project are quite large, so I have added the links to them
 
 ### Links
 
+[Spotify Tracks Dataset](https://www.kaggle.com/datasets/lehaknarnauli/spotify-datasets?select=tracks.csv)
+
+[Spotify Genres Dataset](https://www.kaggle.com/datasets/zaheenhamidani/ultimate-spotify-tracks-db?select=SpotifyFeatures.csv)
