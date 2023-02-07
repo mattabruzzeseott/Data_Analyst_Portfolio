@@ -9,5 +9,9 @@
   Excel, SPSS, Minitab, R
 
 - [__AMS 572: Data Analysis I__](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/sbu_projects/ams_572)
+  - __Skills:__
+  data cleaning and imputation (MCAR and MNAR), data analysis, data visualization, descriptive statistics, hypothesis testing, Shapiro-Wilk test, central limit theorem, F-test, t-tests, ANOVA, mixed-design ANOVA, mixed-effects model, dealing with outliers, Levene's test, Box's M-test
+  - __Technology:__
+  R, R Markdown
 
 - [__AMS 595: Fundamentals of Computing__](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/sbu_projects/ams_595)
