@@ -15,3 +15,7 @@
   R, R Markdown
 
 - [__AMS 595: Fundamentals of Computing__](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/sbu_projects/ams_595)
+  - __Skills:__
+  data analysis, data visualization, conditional statements, loops, list comprehension, functions, object-oriented programming
+  - __Technology:__
+  C++, Python, NumPy, Matplotlib
