@@ -1,7 +1,7 @@
 # Spotify Exploratory Data Analysis
 
 __Code:__
-`spotify_data_analysis.ipynb`
+[`spotify_data_analysis.ipynb`](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/spotify_eda/spotify_data_analysis.ipynb)
 
 __Description:__
 Spotify is a proprietary Swedish audio streaming and media services provider founded on April 23, 2006 by Daniel Ek and Martin Lorentzon. It is one of the largest music streaming service providers, with over 456 million monthly active users, including 195 million paying subscribers, as of September 2022. In this project we will be exploring and quantifying data about music from Spotify, and drawing valuable insights. This includes performing exploratory data analysis (EDA) and creating data visualizations using data scraped from Spotify.
