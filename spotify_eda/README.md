@@ -16,7 +16,7 @@ Python, Pandas, NumPy, Seaborn, Matplotlib
 
 Both datasets used for this EDA were imported from Kaggle.
 
-The datasets for this project are quite large, so I have added the links to them below rather than uploading their .csv files. The same dataset links are also available in the introduction of the `spotify_data_analysis.ipynb` project.
+The datasets for this project are quite large, so I have added the links to them below rather than uploading their .csv files. The same dataset links are also available in the introduction of the [`spotify_data_analysis.ipynb`](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/spotify_eda/spotify_data_analysis.ipynb) project.
 
 ### Links
 
