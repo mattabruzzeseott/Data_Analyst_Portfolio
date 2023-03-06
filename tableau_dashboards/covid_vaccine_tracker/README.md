@@ -5,3 +5,5 @@ __Dashboard:__
 
 __Dataset:__
 [`country_vaccinations_full_data.csv`](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/tableau_dashboards/covid_vaccine_tracker/country_vaccinations_full_data.csv)
+
+__Description:__
