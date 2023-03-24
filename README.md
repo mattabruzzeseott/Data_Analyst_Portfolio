@@ -32,4 +32,4 @@ Microsoft Excel, Google Sheets, Tableau
 
 ## Certifications
 
-- [Google Data Analytics Professional Certificate]
+- [Google Data Analytics Professional Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Coursera%20Google%20Data%20Analytics%20Professional%20Certificate.pdf)
