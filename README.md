@@ -34,3 +34,7 @@ Microsoft Excel, Google Sheets, Tableau
 ## Certifications
 
 - [Google Data Analytics Professional Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Coursera%20Google%20Data%20Analytics%20Professional%20Certificate.pdf)
+- [Kaggle Pandas Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Kaggle%20Pandas%20Certificate.png)
+- [Kaggle Intro to SQL Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Kaggle%20Intro%20to%20SQL%20Certificate.png)
+- [Kaggle Intro to Machine Learning Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Kaggle%20Intro%20to%20Machine%20Learning%20Certificate.png)
+- [Kaggle Python Certificate](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/certifications/Kaggle%20Python%20Certificate.png)
