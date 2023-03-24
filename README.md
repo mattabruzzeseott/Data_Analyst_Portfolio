@@ -18,8 +18,9 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
   - [Python Conditional Statements, Loops, List Comprehension, and Functions](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/PyAssignment1.ipynb)
   - [Python Mandelbrot Set and Markov Chain](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/PythonProject2.ipynb)
   - [Connect 4 Board Game](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/Connect4AMS595_v6.ipynb)
-- [Spotify Exploratory Data Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/spotify_eda)
-- [COVID-19 Vaccine Tracker Dashboard](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/tableau_dashboards/covid_vaccine_tracker)
+- Portfolio Projects
+  - [Spotify Exploratory Data Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/spotify_eda)
+  - [COVID-19 Vaccine Tracker Dashboard](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/tableau_dashboards/covid_vaccine_tracker)
 - [Technical Skills](https://github.com/mattabruzzeseott/data_analysis_portfolio#technical-skills)
 
 ## Technical Skills
@@ -31,3 +32,4 @@ Microsoft Excel, Google Sheets, Tableau
 
 ## Certifications
 
+- [Google Data Analytics Professional Certificate](![image](https://user-images.githubusercontent.com/123343495/227595384-288c115a-7a1a-4edc-8232-fcaa9fd1f95d.png)
