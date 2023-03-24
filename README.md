@@ -18,7 +18,7 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
   - [Python Conditional Statements, Loops, List Comprehension, and Functions](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/PyAssignment1.ipynb)
   - [Python Mandelbrot Set and Markov Chain](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/PythonProject2.ipynb)
   - [Connect 4 Board Game](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/Connect4AMS595_v6.ipynb)
-- Portfolio Projects
+- [Portfolio Projects](https://github.com/mattabruzzeseott/data_analysis_portfolio#portfolio-projects)
   - [Spotify Exploratory Data Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/spotify_eda)
   - [COVID-19 Vaccine Tracker Dashboard](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/tableau_dashboards/covid_vaccine_tracker)
 - [Technical Skills](https://github.com/mattabruzzeseott/data_analysis_portfolio#technical-skills)
