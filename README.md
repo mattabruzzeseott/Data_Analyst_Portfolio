@@ -24,6 +24,11 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
 - [Technical Skills](https://github.com/mattabruzzeseott/data_analysis_portfolio#technical-skills)
 - [Certifications](https://github.com/mattabruzzeseott/data_analysis_portfolio#certifications)
 
+## Portfolio Projects
+
+- [Spotify Exploratory Data Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/spotify_eda)
+- [COVID-19 Vaccine Tracker Dashboard](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/tableau_dashboards/covid_vaccine_tracker)
+
 ## Technical Skills
 
 - __Programming:__
