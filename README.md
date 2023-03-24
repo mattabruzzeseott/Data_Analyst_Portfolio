@@ -20,6 +20,7 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
   - [Connect 4 Board Game](https://github.com/mattabruzzeseott/data_analysis_portfolio/blob/main/sbu_projects/ams_595/Connect4AMS595_v6.ipynb)
 - [Spotify Exploratory Data Analysis](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/spotify_eda)
 - [COVID-19 Vaccine Tracker](https://github.com/mattabruzzeseott/data_analysis_portfolio/tree/main/tableau_dashboards/covid_vaccine_tracker)
+- [Technical Skills](https://github.com/mattabruzzeseott/data_analysis_portfolio#technical-skills)
 
 ## Technical Skills
 
@@ -27,3 +28,6 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
 Python (Pandas, Scikit-Learn, Matplotlib, Seaborn, NumPy), SQL, R/R Markdown, C++, Google BigQuery, Jupyter Notebook
 - __Data Visualization:__
 Microsoft Excel, Google Sheets, Tableau
+
+## Certifications
+
