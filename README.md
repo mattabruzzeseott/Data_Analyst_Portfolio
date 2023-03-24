@@ -32,4 +32,4 @@ Microsoft Excel, Google Sheets, Tableau
 
 ## Certifications
 
-- [Google Data Analytics Professional Certificate](![image](https://user-images.githubusercontent.com/123343495/227595384-288c115a-7a1a-4edc-8232-fcaa9fd1f95d.png)
+- [Google Data Analytics Professional Certificate]
