@@ -32,7 +32,7 @@ Hey, I'm Matt! I am a recent Applied Mathematics graduate with a passion for dat
 ## Technical Skills
 
 - __Programming:__
-Python (Pandas, Scikit-Learn, Matplotlib, Seaborn, NumPy), SQL, R/R Markdown, C++, Google BigQuery, Jupyter Notebook
+Python (Pandas, Scikit-Learn, Matplotlib, Seaborn, NumPy), SQL, MySQL, R/R Markdown, C++, Google BigQuery, Jupyter Notebook
 - __Data Visualization:__
 Microsoft Excel, Google Sheets, Tableau, Looker
 
