@@ -4,7 +4,7 @@ This repository contains a portfolio of data science and data analysis projects 
 
 ## About Me
 
-I am a recent Applied Mathematics graduate with a passion for data analysis and solving complex problems. I have a technical background and hold a Bachelor of Science (B.S.) degree from Stony Brook University, with a major in Applied Mathematics and Statistics, and a concentration in Data Analytics. I have a strong understanding of statistical analysis, data visualization, and programming languages such as Python, R, and SQL. With my proficiency in data cleaning, wrangling, exploration, and visualization, my goal is to turn raw data into actionable insights that drive business decisions.
+Experienced Data Analyst with a solid foundation in Applied Mathematics and Statistics. Proficient in data visualization, statistical analysis, and database development/management. Meticulous attention to detail with a proven track record of delivering insightful findings and recommendations. Adept at transforming complex data into actionable insights to inform business decisions.
 
 ## Table of Contents
 
@@ -31,10 +31,7 @@ I am a recent Applied Mathematics graduate with a passion for data analysis and 
 
 ## Technical Skills
 
-- __Programming:__
-Python (Pandas, Scikit-Learn, Matplotlib, Seaborn, NumPy), SQL, MySQL, R/R Markdown, C++, Google BigQuery, Jupyter Notebook
-- __Data Visualization:__
-Microsoft Excel, Google Sheets, Tableau, Looker
+- Python (Pandas, Scikit-Learn, Matplotlib, Seaborn, NumPy, Flask), MySQL, Looker, Tableau, Google Workspace (Sheets, Docs, Slides), R & R Markdown, Google BigQuery, AWS, Jupyter Notebook, GitHub, Jira, Google Ad Manager
 
 ## Certifications
 
